@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-m3-surface: var(--m3-surface);
+  --color-m3-on-surface: var(--m3-on-surface);
+  --color-m3-primary: var(--m3-primary);
+  --color-m3-on-primary: var(--m3-on-primary);
+  --color-m3-secondary: var(--m3-secondary);
+  --color-m3-on-secondary: var(--m3-on-secondary);
+  --color-m3-outline: var(--m3-outline);
+  --color-m3-surface-variant: var(--m3-surface-variant);
+  --color-m3-on-surface-variant: var(--m3-on-surface-variant);
+}
+
+:root {
+  --m3-surface: #fef7ff;
+  --m3-on-surface: #1d1b20;
+  --m3-primary: #6750a4;
+  --m3-primary-rgb: 103, 80, 164;
+  --m3-on-primary: #ffffff;
+  --m3-secondary: #625b71;
+  --m3-on-secondary: #ffffff;
+  --m3-outline: #79747e;
+  --m3-surface-variant: #e7e0eb;
+  --m3-on-surface-variant: #49454f;
+  --lightmorph-glow: rgba(103, 80, 164, 0.15);
+}
+
+.dark {
+  --m3-surface: #141218;
+  --m3-on-surface: #e6e0e9;
+  --m3-primary: #d0bcff;
+  --m3-primary-rgb: 208, 188, 255;
+  --m3-on-primary: #381e72;
+  --m3-secondary: #ccc2dc;
+  --m3-on-secondary: #332d41;
+  --m3-outline: #938f99;
+  --m3-surface-variant: #49454f;
+  --m3-on-surface-variant: #cac4d0;
+  --lightmorph-glow: rgba(208, 188, 255, 0.1);
+}
+
+body {
+  @apply bg-m3-surface text-m3-on-surface transition-colors duration-300;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* LightMorph Effect - Diffused light instead of blur */
+.lightmorph-card {
+  @apply bg-m3-surface/40 border border-m3-outline/10 backdrop-blur-sm;
+  box-shadow: 
+    0 10px 40px -10px var(--lightmorph-glow),
+    inset 0 0 20px rgba(var(--m3-primary-rgb), 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.lightmorph-card::before {
+  content: '';
+  @apply absolute -top-1/2 -left-1/2 w-[200%] h-[200%] pointer-events-none;
+  background: radial-gradient(circle at center, var(--lightmorph-glow) 0%, transparent 50%);
+  opacity: 0.4;
+}
+
+.lightmorph-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-m3-on-surface via-m3-on-surface to-m3-primary/60;
+  filter: drop-shadow(0 0 15px var(--lightmorph-glow));
+}
+
+.lightmorph-glow {
+  position: relative;
+}
+
+.lightmorph-glow::after {
+  content: '';
+  @apply absolute inset-0 -z-10 blur-3xl opacity-20 pointer-events-none;
+  background: radial-gradient(circle at center, rgba(var(--m3-primary-rgb), 1) 0%, transparent 70%);
+}
+
+/* FAB Instant Fill Animation */
+@keyframes instantFill {
+  0% { transform: scale(0); opacity: 0; }
+  1% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.fab-fill {
+  animation: instantFill 0.1s ease-out forwards;
+}
