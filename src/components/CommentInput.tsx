@@ -62,7 +62,7 @@ export default function CommentInput({ user, parentId = null, onCommentAdded, on
       let mimeType = null;
 
       if (file) {
-        const uploadRes = await uploadMedia(file);
+        const uploadRes = await uploadMedia(file) as any;
         mediaKey = uploadRes.key;
         mimeType = uploadRes.mimeType;
       }

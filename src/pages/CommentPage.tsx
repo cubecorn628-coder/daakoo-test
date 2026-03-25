@@ -21,7 +21,7 @@ export default function CommentPage() {
 
   const fetchComments = async () => {
     try {
-      const data = await getComments();
+      const data = await getComments() as any[];
       const dataWithHash = data.map((c: any) => ({
         ...c,
         user: {

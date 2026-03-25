@@ -34,7 +34,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+    const error = await response.json().catch(() => ({ error: 'Unknown error' })) as any;
     throw new Error(error.error || response.statusText);
   }
 
@@ -47,8 +47,11 @@ export async function login(data: any) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error((await res.json()).error);
-  const json = await res.json();
+  if (!res.ok) {
+    const err = await res.json() as any;
+    throw new Error(err.error);
+  }
+  const json = await res.json() as any;
   json.user.emailHash = getGravatarHash(json.user.email);
   localStorage.setItem('token', json.token);
   localStorage.setItem('user', JSON.stringify(json.user));
@@ -61,8 +64,11 @@ export async function register(data: any) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
-  if (!res.ok) throw new Error((await res.json()).error);
-  const json = await res.json();
+  if (!res.ok) {
+    const err = await res.json() as any;
+    throw new Error(err.error);
+  }
+  const json = await res.json() as any;
   json.user.emailHash = getGravatarHash(json.user.email);
   localStorage.setItem('token', json.token);
   localStorage.setItem('user', JSON.stringify(json.user));
@@ -117,6 +123,9 @@ export async function uploadMedia(file: File) {
     body: formData
   });
 
-  if (!res.ok) throw new Error((await res.json()).error);
+  if (!res.ok) {
+    const err = await res.json() as any;
+    throw new Error(err.error);
+  }
   return res.json();
 }
