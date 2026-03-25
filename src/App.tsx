@@ -293,8 +293,8 @@ export default function App() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ 
               backgroundImage: isDarkMode 
-                ? `url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2564&auto=format&fit=crop')` 
-                : `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`,
+                ? `url('https://pbs.twimg.com/media/HDQzLECaYAAbERd.jpg')` 
+                : `url('https://pbs.twimg.com/media/HDQzLECaYAAbERd.jpg')`,
               filter: isDarkMode ? 'brightness(0.4) saturate(0.7)' : 'brightness(1) saturate(1)'
             }}
           />
