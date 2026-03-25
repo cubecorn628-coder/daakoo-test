@@ -162,6 +162,76 @@ const OnboardingGuide = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+const ThemeToggle = ({ isDarkMode, onToggle }: { isDarkMode: boolean; onToggle: () => void }) => {
+  return (
+    <button
+      onClick={onToggle}
+      className={cn(
+        "relative w-16 h-9 rounded-full p-1 transition-all duration-500 ease-in-out overflow-hidden group active:scale-90",
+        isDarkMode ? "bg-m3-primary/20" : "bg-m3-on-surface/5"
+      )}
+      aria-label="Toggle theme"
+    >
+      {/* Background Glow */}
+      <motion.div
+        className="absolute inset-0 opacity-20 blur-md"
+        animate={{
+          background: isDarkMode 
+            ? "radial-gradient(circle at center, var(--m3-primary), transparent)" 
+            : "radial-gradient(circle at center, #fbbf24, transparent)"
+        }}
+      />
+      
+      {/* Sliding Knob */}
+      <motion.div
+        className={cn(
+          "relative z-10 w-7 h-7 rounded-full flex items-center justify-center shadow-lg",
+          isDarkMode ? "bg-m3-primary text-m3-on-primary" : "bg-white text-yellow-500"
+        )}
+        animate={{
+          x: isDarkMode ? 28 : 0,
+          rotate: isDarkMode ? 360 : 0
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20
+        }}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {isDarkMode ? (
+            <motion.div
+              key="moon"
+              initial={{ x: -10, opacity: 0, rotate: -45 }}
+              animate={{ x: 0, opacity: 1, rotate: 0 }}
+              exit={{ x: 10, opacity: 0, rotate: 45 }}
+              transition={{ duration: 0.25, ease: "circOut" }}
+            >
+              <Moon size={16} fill="currentColor" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="sun"
+              initial={{ x: 10, opacity: 0, rotate: 45 }}
+              animate={{ x: 0, opacity: 1, rotate: 0 }}
+              exit={{ x: -10, opacity: 0, rotate: -45 }}
+              transition={{ duration: 0.25, ease: "circOut" }}
+            >
+              <Sun size={16} fill="currentColor" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Subtle Icons in Background */}
+      <div className="absolute inset-0 flex items-center justify-between px-2.5 pointer-events-none opacity-20">
+        <Sun size={14} className={cn(isDarkMode ? "text-m3-on-surface" : "text-yellow-500")} />
+        <Moon size={14} className={cn(isDarkMode ? "text-m3-primary" : "text-m3-on-surface")} />
+      </div>
+    </button>
+  );
+};
+
 // --- Main App ---
 
 export default function App() {
@@ -213,13 +283,22 @@ export default function App() {
         className="fixed inset-0 z-[-1] overflow-hidden"
         aria-hidden="true"
       >
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 scale-105"
-          style={{ 
-            backgroundImage: `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`,
-            filter: isDarkMode ? 'brightness(0.4) saturate(0.7)' : 'brightness(1) saturate(1)'
-          }}
-        />
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={isDarkMode ? 'dark' : 'light'}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1.05 }}
+            exit={{ opacity: 0, scale: 1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ 
+              backgroundImage: isDarkMode 
+                ? `url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2564&auto=format&fit=crop')` 
+                : `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`,
+              filter: isDarkMode ? 'brightness(0.4) saturate(0.7)' : 'brightness(1) saturate(1)'
+            }}
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-m3-surface/10 to-m3-surface" />
       </div>
 
@@ -260,33 +339,7 @@ export default function App() {
             ))}
             <div className="h-6 w-[1px] bg-m3-outline/20" />
             <div className="flex items-center gap-4">
-              <button 
-                onClick={toggleTheme}
-                className="p-2.5 rounded-xl hover:bg-m3-on-surface/5 transition-all active:scale-90"
-                aria-label="Toggle theme"
-              >
-                <AnimatePresence mode="wait">
-                  {isDarkMode ? (
-                    <motion.div
-                      key="sun"
-                      initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.5, y: -10 }}
-                    >
-                      <Sun size={22} className="text-yellow-400" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="moon"
-                      initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.5, y: -10 }}
-                    >
-                      <Moon size={22} className="text-m3-primary" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </button>
+              <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
               <Button className="shadow-[0_10px_20px_-5px_rgba(var(--m3-primary-rgb),0.3)] px-8">Get Started</Button>
             </div>
           </div>
@@ -321,6 +374,10 @@ export default function App() {
                   {link.name}
                 </a>
               ))}
+              <div className="flex items-center justify-between p-4 rounded-3xl bg-m3-on-surface/5">
+                <span className="font-bold">Theme</span>
+                <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
+              </div>
               <Button className="w-full py-4 text-lg">Get Started</Button>
             </div>
           </motion.div>
