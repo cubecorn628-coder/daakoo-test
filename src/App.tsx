@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sun, 
@@ -17,9 +18,11 @@ import {
   Info,
   ChevronRight,
   ChevronLeft,
-  Play
+  Play,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from './lib/utils';
+import CommentPage from './pages/CommentPage';
 
 // --- Components ---
 
@@ -234,7 +237,7 @@ const ThemeToggle = ({ isDarkMode, onToggle }: { isDarkMode: boolean; onToggle: 
 
 // --- Main App ---
 
-export default function App() {
+function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -293,8 +296,8 @@ export default function App() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ 
               backgroundImage: isDarkMode 
-                ? `url('https://pbs.twimg.com/media/HDQzLECaYAAbERd.jpg')` 
-                : `url('https://pbs.twimg.com/media/HDQzLECaYAAbERd.jpg')`,
+                ? `url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2564&auto=format&fit=crop')` 
+                : `url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')`,
               filter: isDarkMode ? 'brightness(0.4) saturate(0.7)' : 'brightness(1) saturate(1)'
             }}
           />
@@ -337,6 +340,10 @@ export default function App() {
                 <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-m3-primary transition-all duration-300 group-hover:w-full rounded-full" />
               </a>
             ))}
+            <Link to="/comment" className="text-sm font-semibold hover:text-m3-primary transition-all relative group tracking-wide flex items-center gap-1">
+              <MessageSquare size={16} /> Comments
+              <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-m3-primary transition-all duration-300 group-hover:w-full rounded-full" />
+            </Link>
             <div className="h-6 w-[1px] bg-m3-outline/20" />
             <div className="flex items-center gap-4">
               <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
@@ -346,6 +353,9 @@ export default function App() {
 
           {/* Mobile Actions */}
           <div className="md:hidden flex items-center gap-3">
+            <Link to="/comment" className="p-2 rounded-full hover:bg-m3-on-surface/5">
+              <MessageSquare size={22} />
+            </Link>
             <button className="p-2 rounded-full hover:bg-m3-on-surface/5">
               <Github size={22} />
             </button>
@@ -668,5 +678,16 @@ export default function App() {
         <Info size={24} />
       </button>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/comment" element={<CommentPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
